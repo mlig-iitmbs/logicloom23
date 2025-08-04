@@ -207,6 +207,53 @@ document.onmousedown=clickIE4;
 
 document.oncontextmenu=new Function("return false")
 
-</script>  
+</script>
+    <script>
+function updateLinks() {
+  // Get all links (anchor tags), images, scripts, and links with href or src attributes
+  const links = document.querySelectorAll('a[href], img[src], link[href], script[src]');
+  
+  // Iterate through all the elements with href or src attributes
+  links.forEach(link => {
+    let url = link.getAttribute('href') || link.getAttribute('src');
+    
+    // Check if the URL starts with '/ml/events/logicloom1/assets/'
+    if (url && url.startsWith('/ml/events/logicloom1/assets/')) {
+      const newUrl = url.replace('/ml/events/logicloom1/assets/', '../assets/');
+      
+      // Update the href or src attribute with the new URL
+      if (link.hasAttribute('href')) {
+        link.setAttribute('href', newUrl);
+      } else if (link.hasAttribute('src')) {
+        link.setAttribute('src', newUrl);
+      }
+    }
+    
+    // If the link contains 'logicloom.netlify.app', remove the URL or text
+    if (url && url.includes('logicloom.netlify.app')) {
+      if (link.hasAttribute('href')) {
+        link.removeAttribute('href');  // Remove the href link
+      }
+      if (link.hasAttribute('src')) {
+        link.removeAttribute('src');  // Remove the src attribute if it's an image or script
+      }
+    }
+  });
+
+  // Now, search for and remove any text nodes containing 'logicloom.netlify.app'
+  const bodyTextNodes = document.body.querySelectorAll('*');
+  
+  bodyTextNodes.forEach(element => {
+    if (element.children.length === 0) {  // Only check text nodes, not elements with children
+      if (element.textContent.includes('logicloom.netlify.app')) {
+        element.textContent = element.textContent.replace(/logicloom\.netlify\.app/g, ''); // Remove text
+      }
+    }
+  });
+}
+
+// Call the function on page load
+document.addEventListener('DOMContentLoaded', updateLinks);
+  </script>
 </body>
 </html>
